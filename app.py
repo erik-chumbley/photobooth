@@ -1,23 +1,29 @@
 import sys
 import pygame
+import pygame_gui
 from settings import *
 from cameracontroller import CameraController
+from uimanager import UIManager
+from photoshootbutton import PhotoShootButton
 
 class App:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))#, pygame.FULLSCREEN | pygame.SCALED)
         self.clock = pygame.time.Clock()
         self.running = True
-        self.cameracontroller = CameraController()
+        self.photoshoot = False
+        if ENABLECAM: self.cameracontroller = CameraController()
+        self.ui = UIManager(WIDTH, HEIGHT)
+        self.photoshootbutton = PhotoShootButton(self.ui.manager)
 
     def run(self):
         while self.running:
+            td = self.clock.tick(FPS)/1000.0
             self.handle_events()
-            self.update()
+            self.update(td)
             self.draw()
-            self.clock.tick(FPS)
-        self.cameracontroller.close_camera()
+        if ENABLECAM: self.cameracontroller.close_camera()
         pygame.quit()
         sys.exit()
 
@@ -28,11 +34,18 @@ class App:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == self.photoshootbutton.button:
+                    self.photoshoot = True
+                    self.photoshootbutton.button.kill()
+            self.ui.manager.process_events(event)
 
-    def update(self):
-        pass
+    def update(self, time_delta):
+        self.ui.manager.update(time_delta)
+        if self.photoshoot: print('Shooting Photos!')
 
     def draw(self):
         self.screen.fill((0, 100, 255))
-        self.cameracontroller.display_preview(self.screen)
+        if ENABLECAM: self.cameracontroller.display_preview(self.screen)
+        self.ui.manager.draw_ui(self.screen)
         pygame.display.flip()

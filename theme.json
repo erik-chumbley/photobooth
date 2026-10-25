@@ -1,0 +1,9 @@
+{
+    "#circular_button": {
+        "misc": {
+            "shape": "ellipse",
+            "border_width": "2",
+            "shadow_width": "2"
+        }
+    }
+}
