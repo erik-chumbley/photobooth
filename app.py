@@ -5,6 +5,7 @@ from settings import *
 from cameracontroller import CameraController
 from uimanager import UIManager
 from photoshootbutton import PhotoShootButton
+from photoshoot import PhotoShoot
 
 class App:
     def __init__(self):
@@ -12,7 +13,7 @@ class App:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))#, pygame.FULLSCREEN | pygame.SCALED)
         self.clock = pygame.time.Clock()
         self.running = True
-        self.photoshoot = False
+        self.photoshoot = PhotoShoot()
         if ENABLECAM: self.cameracontroller = CameraController()
         self.ui = UIManager(WIDTH, HEIGHT)
         self.photoshootbutton = PhotoShootButton(self.ui.manager)
@@ -36,13 +37,13 @@ class App:
                     self.running = False
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.photoshootbutton.button:
-                    self.photoshoot = True
+                    self.photoshoot.running = True
                     self.photoshootbutton.button.kill()
             self.ui.manager.process_events(event)
 
     def update(self, time_delta):
         self.ui.manager.update(time_delta)
-        if self.photoshoot: print('Shooting Photos!')
+        if self.photoshoot.running: self.photoshoot.run()
 
     def draw(self):
         self.screen.fill((0, 100, 255))

@@ -6,4 +6,4 @@ HEIGHT = 480
 FPS = 30
 
 # Disable Camera (used for testing UI without camera connection)
-ENABLECAM = True
+ENABLECAM = False
