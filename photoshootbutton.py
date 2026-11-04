@@ -5,6 +5,7 @@ from settings import *
 class PhotoShootButton:
     def __init__(self, ui_manager):
         self.create_button(ui_manager)
+        self.hidden = False
 
     def create_button(self, ui_manager):
         btn_diam = 100
@@ -16,3 +17,7 @@ class PhotoShootButton:
             manager=ui_manager,
             object_id='#circular_button'
         )
+
+    def update_button_visibility(self):
+        if self.hidden: self.button.hide()
+        else: self.button.show()

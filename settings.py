@@ -6,4 +6,8 @@ HEIGHT = 480
 FPS = 30
 
 # Disable Camera (used for testing UI without camera connection)
-ENABLECAM = False
+ENABLECAM = True
+
+# Photoshoot Settings
+COUNTDOWN = 5
+PHOTOS = 3

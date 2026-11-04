@@ -10,11 +10,15 @@ from photoshoot import PhotoShoot
 class App:
     def __init__(self):
         pygame.init()
+        pygame.font.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))#, pygame.FULLSCREEN | pygame.SCALED)
         self.clock = pygame.time.Clock()
         self.running = True
-        self.photoshoot = PhotoShoot()
-        if ENABLECAM: self.cameracontroller = CameraController()
+        if ENABLECAM:
+            self.cameracontroller = CameraController()
+            self.photoshoot = PhotoShoot(self.cameracontroller)
+        else:
+            self.photoshoot = PhotoShoot()
         self.ui = UIManager(WIDTH, HEIGHT)
         self.photoshootbutton = PhotoShootButton(self.ui.manager)
 
@@ -38,15 +42,20 @@ class App:
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.photoshootbutton.button:
                     self.photoshoot.running = True
-                    self.photoshootbutton.button.kill()
             self.ui.manager.process_events(event)
+        self.cameracontroller.camera_event_listener()
 
     def update(self, time_delta):
         self.ui.manager.update(time_delta)
-        if self.photoshoot.running: self.photoshoot.run()
+        self.photoshootbutton.update_button_visibility()
+        if self.photoshoot.running:
+            self.photoshoot.run()
+            self.photoshootbutton.hidden = True
+        else: self.photoshootbutton.hidden = False
 
     def draw(self):
         self.screen.fill((0, 100, 255))
         if ENABLECAM: self.cameracontroller.display_preview(self.screen)
         self.ui.manager.draw_ui(self.screen)
+        self.photoshoot.draw_countdown(self.screen)
         pygame.display.flip()
