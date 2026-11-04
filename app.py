@@ -43,7 +43,7 @@ class App:
                 if event.ui_element == self.photoshootbutton.button:
                     self.photoshoot.running = True
             self.ui.manager.process_events(event)
-        self.cameracontroller.camera_event_listener()
+        # if ENABLECAM: self.cameracontroller.camera_event_listener()
 
     def update(self, time_delta):
         self.ui.manager.update(time_delta)
